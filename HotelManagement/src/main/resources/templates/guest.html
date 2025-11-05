@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{starter::head('Thông tin khách hàng')}">
+<meta charset="utf-8">
+</head>
+<body>
+	<div class="super_container">
+		<div th:replace="~{starter::header(4)}"></div>
+		<div th:replace="~{starter::header_content}"></div>
+		<div class="container" style="margin-top: 350px; margin-bottom: 50px">
+			<div class="row">
+				<div class="col-md-12">
+					<form class="col-md-4" style="float: right;"
+						th:action="@{/guests(page=0)}" method="get">
+						<div class="form-group">
+							<input type="search" class="form-control" id="search-box"
+								aria-describedby="search-box" placeholder="Search..."
+								name="search-text" th:attr="value=${searchText}">
+						</div>
+					</form>
+
+					<table class="table table-hover table-bordered">
+						<thead class="thead-light">
+							<tr>
+								<th style="text-align: center">Stt</th>
+								<th style="text-align: center;display: none;">ID</th>
+								<th style="text-align: center">Họ tên</th>
+								<th style="text-align: center">Ngày sinh</th>
+								<th style="text-align: center">Địa chỉ</th>
+								<th style="text-align: center">Số điện thoại</th>
+								<th style="text-align: center">CMT/CCCD</th>
+								<th style="text-align: center">Hộ chiếu</th>
+								<th style="text-align: center">Quốc tịch</th>
+								<th style="text-align: center">Email</th>
+								<th style="text-align: center">Edit</th>
+							</tr>
+						</thead>
+
+						<tfoot class="thead-light">
+							<tr>
+								<th style="text-align: center">Stt</th>
+								<th style="text-align: center;display: none;">ID</th>
+								<th style="text-align: center">Họ tên</th>
+								<th style="text-align: center">Ngày sinh</th>
+								<th style="text-align: center">Địa chỉ</th>
+								<th style="text-align: center">Số điện thoại</th>
+								<th style="text-align: center">CMT/CCCD</th>
+								<th style="text-align: center">Hộ chiếu</th>
+								<th style="text-align: center">Quốc tịch</th>
+								<th style="text-align: center">Email</th>
+								<th style="text-align: center">Edit</th>
+							</tr>
+						</tfoot>
+
+						<tbody>
+							<th:block th:each="guest,item:${guests}">
+								<tr>
+									<td style="text-align: center" th:utext="${item.count}"></td>
+									<td style="display: none;" th:utext="${guest.guestId}"></td>
+									<td th:utext="${guest.guestName}"></td>
+									<td th:utext="${guest.birth}"></td>
+									<td th:utext="${guest.address}"></td>
+									<td th:utext="${guest.phoneNumber}"></td>
+									<td th:utext="${guest.idCard}"></td>
+									<td th:utext="${guest.passport}"></td>
+									<td th:utext="${guest.nationality}"></td>
+									<td th:utext="${guest.email}"></td>
+									<td style="text-align: center"><a
+										class="btn btn-primary text-white eBtn"
+										th:href="@{/find-guest/(id=${guest.guestId})}"><i
+											class="fas fa-user-edit"></i></a></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+					<div style="float: left; margin-top: 26px; font-size: 17px">
+						<p>
+							Tổng số trang : <span th:utext="${totalPageCount}"
+								style="color: red; font-weight: bold;"></span>
+						</p>
+					</div>
+					<nav aria-label="..." style="float: right; margin-top: 20px;">
+						<ul class="pagination">
+							<li
+								th:class="${currentIndex == 1}? 'page-item disabled' : 'page-item'">
+								<a class="page-link" th:href="@{/guests}">First</a>
+							</li>
+							<li
+								th:class="${currentIndex == 1}? 'page-item disabled': 'page-item' ">
+								<a class="page-link" aria-label="Previous"
+								th:href="@{|${baseUrl}${currentIndex-2}${searchUrl}|}"
+								title='Go to previous page'><span aria-hidden="true">«</span>
+									<span class="sr-only">Previous</span></a>
+							</li>
+							<li th:each="item : ${#numbers.sequence(beginIndex,endIndex)}"
+								th:class="${item == currentIndex ? 'page-item active' :'page-item' }">
+								<a class="page-link"
+								th:href="@{|${baseUrl}${item-1}${searchUrl}|}"> <span
+									th:text='${item}'>1</span>
+							</a>
+							</li>
+							<li class="page-item disabled" th:if="${extra}"><a
+								class="page-link" href=""> <span>...</span>
+							</a></li>
+							<li th:if="${checkLast}" class="page-item"><a
+								class="page-link" th:href="@{|${baseUrl}${totalPageCount-1}|}">
+									<span th:text='${totalPageCount}'>6</span>
+							</a></li>
+							<li
+								th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled': 'page-item'">
+								<a class="page-link" aria-label="Next" title='Go to next page'
+								th:href="@{|${baseUrl}${currentIndex}${searchUrl}|}"><span
+									aria-hidden="true">»</span> <span class="sr-only">Next</span></a>
+							</li>
+							<li
+								th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled':'page-item'">
+								<a class="page-link"
+								th:href="@{|${baseUrl}${totalPageCount-1}|}">Last</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+
+			</div>
+			<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalCenterTitle"
+				aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document"
+					style="margin-top: 50px">
+					<div class="modal-content">
+						<form method="post"
+							th:action="@{/update-guest-info(page=${currentIndex-1},text=${searchText})}">
+							<div class="modal-header">
+								<h5 class="modal-title" style="font-weight: bold;">Cập nhật
+									thông tin khách</h5>
+								<h5 class="modal-title" style="font-weight: bold;">Sửa
+									thông tin khách</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body row" style="margin-left: 0;">
+								<div class="form-group col-md-6">
+									<label for="name" class="title-input">Họ tên</label> <input
+										type="text" class="form-control" placeholder="Họ tên..."
+										required id="name" name="name">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="card" class="title-input">Căn cước </label> <input
+										type="number" class="form-control"
+										placeholder="Số căn cước..." id="card" name="card">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="birth" class="title-input">Ngày sinh</label> <input
+										type="date" class="form-control" placeholder="Ngày sinh..."
+										id="birth" name="birth">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="passport" class="title-input">Mã Hộ chiếu</label> <input
+										type="text" class="form-control"
+										placeholder="Mã hộ chiếu..."/>
+									<label for="passport" class="title-input">Hộ chiếu</label> <input
+										type="text" class="form-control" placeholder="Số hộ chiếu..." id="passport"
+									name="passport">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="address" class="title-input">Địa chỉ</label> <input
+										type="text" class="form-control" placeholder="Địa chỉ..."
+										id="address" name="address">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="nationality" class="title-input">Quốc tịch</label>
+									<input type="text" class="form-control"
+										placeholder="Quốc tịch..." id="nationality" name="nationality">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="phone" class="title-input">Số điện thoại</label> <input
+										type="number" class="form-control"
+										placeholder="Số điện thoại..." id="phone" name="phone">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="email" class="title-input">Email</label> <input
+										type="email" class="form-control" placeholder="Email..."
+										id="email" name="email">
+								</div>
+								<div class="form-group col-md-6" style="display: none;">
+									<input type="text" class="form-control" id="id" name="id">
+								</div>
+							</div>
+							<div class="modal-footer" style="width: 100%">
+								<button type="submit" class="btn btn-primary">Lưu</button>
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">Đóng</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div th:replace="~{starter::footer}"></div>
+	<div th:replace="~{starter::script}"></div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			$('.eBtn').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+
+				$.get(href, function(guests, status) {
+					$('#id').val(guests.guestId).hide();
+					$('#name').val(guests.guestName);
+					$('#birth').val(guests.birth);
+					$('#card').val(guests.idCard);
+					$('#passport').val(guests.passport);
+					$('#address').val(guests.address);
+					$('#nationality').val(guests.nationality);
+					$('#phone').val(guests.phoneNumber);
+					$('#email').val(guests.email);
+				});
+				$('#exampleModalCenter').modal();
+			});
+
+			$('input').click(function() {
+				this.select();
+			});
+
+		});
+	</script>
+</body>
+</html>

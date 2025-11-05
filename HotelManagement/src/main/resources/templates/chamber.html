@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{starter::head('Quản lý phòng')}">
+</head>
+<body>
+	<div class="super_container">
+		<div th:replace="~{starter::header(5)}"></div>
+		<div th:replace="~{starter::header_content}"></div>
+		<div class="container" style="margin-top: 350px; margin-bottom: 50px">
+			<div class="row">
+				<div class="col-md-6" style="float: left;">
+					<button type="button" class="btn btn-success aBtn">
+						<i class="fas fa-hotel"></i> Thêm
+					</button>
+				</div>
+				<form class="col-md-6" th:action="@{/chamber(page=0)}" method="get">
+					<div class="form-group" style="width: 75%; float: right;">
+						<input type="search" class="form-control" id="search-box"
+							aria-describedby="search-box" placeholder="Search..."
+							name="search-text" th:attr="value=${searchText}">
+					</div>
+				</form>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-light">
+						<tr>
+							<th style="text-align: center">Stt</th>
+							<th style="text-align: center; display: none">ID</th>
+							<th style="text-align: center">Số phòng</th>
+							<th style="text-align: center">Loại phòng</th>
+							<th style="text-align: center">Giá</th>
+							<th style="text-align: center">Diện tích</th>
+							<th style="text-align: center">Ghi chú</th>
+							<th style="text-align: center">Vip</th>
+							<th style="text-align: center">Còn trống</th>
+							<th style="text-align: center">Sửa</th>
+							<th style="text-align: center">Xóa</th>
+						</tr>
+					</thead>
+
+					<tfoot class="thead-light">
+						<tr>
+							<th style="text-align: center">Stt</th>
+							<th style="text-align: center; display: none">ID</th>
+							<th style="text-align: center">Số phòng</th>
+							<th style="text-align: center">Loại phòng</th>
+							<th style="text-align: center">Giá</th>
+							<th style="text-align: center">Diện tích</th>
+							<th style="text-align: center">Ghi chú</th>
+							<th style="text-align: center">Vip</th>
+							<th style="text-align: center">Còn trống</th>
+							<th style="text-align: center">Sửa</th>
+							<th style="text-align: center">Xóa</th>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<th:block th:each="chamber,item:${chambers}">
+							<tr>
+								<td style="text-align: center; font-weight: bold;"
+									th:utext="${item.count}"></td>
+								<td style="display: none;"></td>
+								<td th:utext="${chamber.chamberNumber}"
+									style="text-align: center"></td>
+								<th:block th:switch="${chamber.chamberType}">
+									<td style="text-align: center" th:case="single">Single</td>
+									<td style="text-align: center" th:case="couple">Couple</td>
+									<td style="text-align: center" th:case="family">Family</td>
+									<td style="text-align: center" th:case="*"></td>
+								</th:block>
+								<td th:utext="${chamber.priceDay}" style="text-align: center"></td>
+								<td th:utext="${chamber.chamberArea}" style="text-align: center"></td>
+								<td th:utext="${chamber.note}" class="text-truncate"
+									style="max-width: 200px"></td>
+								<td style="text-align: center">
+									<div class="form-check">
+										<input th:attr="checked=${chamber.isVip}"
+											class="form-check-input position-static" type="checkbox"
+											onclick="javascript: return false;">
+									</div>
+								</td>
+								<td style="text-align: center">
+									<div class="form-check">
+										<input th:attr="checked=${chamber.isEmpty}"
+											class="form-check-input position-static" type="checkbox"
+											onclick="javascript: return false;">
+									</div>
+								</td>
+								<td style="text-align: center"><a
+									th:class="${chamber.isEmpty=='false'}?'btn btn-primary text-white disabled':'btn btn-primary text-white eBtn'"
+									th:href="@{/find-chamber(id=${chamber.chamberId})}"><i
+										class="fas fa-pencil-alt"></i></a></td>
+								<td style="text-align: center"><a
+									th:class="${chamber.isEmpty=='false'}?'btn btn-danger text-white disabled':'btn btn-danger text-white dBtn'"
+									th:href="@{/find-chamber(id=${chamber.chamberId})}"><i
+										class="fas fa-trash"></i></a></td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+				<div class="col-md-6" style="float: left; margin-top: 26px; font-size: 17px">
+					<p>
+						Số phòng : <span th:utext="${totalElement}"
+							style="color: red; font-weight: bold;"></span>
+					</p>
+				</div>
+				<nav class="col-md-6" aria-label="..." style="margin-top: 20px;">
+					<ul class="pagination" style="float: right;">
+						<li
+							th:class="${currentIndex == 1}? 'page-item disabled' : 'page-item'">
+							<a class="page-link" th:href="@{/chamber}">First</a>
+						</li>
+						<li
+							th:class="${currentIndex == 1}? 'page-item disabled': 'page-item' ">
+							<a class="page-link" aria-label="Previous"
+							th:href="@{|${baseUrl}${currentIndex-2}${searchUrl}|}"
+							title='Go to previous page'><span aria-hidden="true">«</span>
+								<span class="sr-only">Previous</span></a>
+						</li>
+						<li th:each="item : ${#numbers.sequence(beginIndex,endIndex)}"
+							th:class="${item == currentIndex ? 'page-item active' :'page-item' }">
+							<a class="page-link"
+							th:href="@{|${baseUrl}${item-1}${searchUrl}|}"> <span
+								th:text='${item}'>1</span>
+						</a>
+						</li>
+						<li class="page-item disabled" th:if="${extra}"><a
+							class="page-link" href=""> <span>...</span>
+						</a></li>
+						<li th:if="${checkLast}" class="page-item"><a
+							class="page-link" th:href="@{|${baseUrl}${totalPageCount-1}|}">
+								<span th:text='${totalPageCount}'>6</span>
+						</a></li>
+						<li
+							th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled': 'page-item'">
+							<a class="page-link" aria-label="Next" title='Go to next page'
+							th:href="@{|${baseUrl}${currentIndex}${searchUrl}|}"><span
+								aria-hidden="true">»</span> <span class="sr-only">Next</span></a>
+						</li>
+						<li
+							th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled':'page-item'">
+							<a class="page-link" th:href="@{|${baseUrl}${totalPageCount-1}|}">Last</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+
+		<div class="modal fade" id="updateData" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document"
+				style="margin-top: 50px">
+				<div class="modal-content">
+					<form method="post"
+						th:action="@{/update-chamber(page=${currentIndex-1},text=${searchText})}">
+						<div class="modal-header">
+							<h5 class="modal-title" style="font-weight: bold;">Cập nhật
+								thông tin phòng</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body row" style="margin-left: 0;">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="number" class="title-input">Số phòng</label> <input
+										type="text" class="form-control" placeholder="Số phòng..."
+										required id="number" name="number">
+								</div>
+								<div class="form-group">
+									<label for="price" class="title-input">Giá</label> <input
+										type="number" class="form-control" placeholder="Giá..."
+										id="price" name="price">
+								</div>
+								<div class="form-group">
+									<label for="area" class="title-input">Diện tích</label> <input
+										type="text" class="form-control" placeholder="Diện tích..."
+										id="area" name="area">
+								</div>
+								<div class="form-check"
+									style="padding-left: 30px; padding-top: 10px;">
+									<input class="form-check-input" type="checkbox" name="vip"
+										id="vip"> <label class="form-check-label" for="vip">
+										Vip </label>
+								</div>
+								<div class="form-group" style="display: none;">
+									<input type="text" class="form-control" id="id" name="id">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="number" class="title-input">Loại phòng</label> <select
+										class="custom-select" name="type" id="type">
+										<option value="single">Single</option>
+										<option value="couple">Couple</option>
+										<option value="family">Family</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="note" class="title-input">Ghi chú</label>
+									<textarea class="form-control" id="note" name="note" rows="7"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer" style="width: 100%">
+							<button type="submit" class="btn btn-primary">Lưu</button>
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Đóng</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!--Delete Modal -->
+		<div class="modal fade" tabindex="-1" id="deleteModal" role="dialog">
+			<div class="modal-dialog" role="document" style="margin-top: 100px">
+				<form
+					th:action="@{/delete-chamber(page=${currentIndex-1},text=${searchText})}"
+					method="post">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Xác nhận xóa</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<p>
+								<i class="fas fa-exclamation-triangle text-warning"
+									style="margin-right: 5px"></i>Bạn có chắc chắn muốn xóa phòng
+								này không? <input type="text" name="id" id="delete_id"
+									style="display: none;">
+							</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-success"
+								data-dismiss="modal">Hủy</button>
+							<button type="submit" class="btn btn-danger">Xóa</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div th:replace="~{starter::footer}"></div>
+	<div th:replace="~{starter::script}"></div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			$('.eBtn,.aBtn').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				var text = $(this).text();
+				if (text == '') {
+					$.get(href, function(chamber, status) {
+						$('#number').val(chamber.chamberNumber);
+						$('#type').val(chamber.chamberType);
+						$('#price').val(chamber.priceDay);
+						$('#area').val(chamber.chamberArea);
+						$('#note').val(chamber.note);
+						if (chamber.isVip == 'true') {
+							$('#vip').prop('checked', true);
+						} else {
+							$('#vip').prop('checked', false);
+						}
+						$('#id').val(chamber.chamberId);
+					});
+					$('#updateData').modal();
+				} else {
+					$('#number').val('');
+					$('#type').val('');
+					$('#price').val('');
+					$('#area').val('');
+					$('#note').val('');
+					$('#id').val('-1');
+					$('#updateData').modal();
+				}
+			});
+
+			$('.dBtn').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				$.get(href, function(chamber, status) {
+					$('#delete_id').val(chamber.chamberId);
+				});
+				$('#deleteModal').modal();
+			});
+
+			$('input').click(function() {
+				this.select();
+			});
+
+		});
+	</script>
+</body>
+</html>

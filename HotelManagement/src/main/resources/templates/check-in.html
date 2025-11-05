@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{starter::head('Check-in')}">
+</head>
+<body>
+	<div class="super_container">
+		<div th:replace="~{starter::header(1)}"></div>
+		<div th:replace="~{starter::header_content}"></div>
+		<div class="container" style="margin-top: 350px; margin-bottom: 50px">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="row" style="padding-left: 0; margin-top: 30px">
+						<a href="" class="btn btn-success">Đặt nhiều phòng</a>
+					</div>
+					<div class="chamber-filter">
+						<h2>Giá</h2>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=1,t=${currentType},v=${currentVip})}">
+									<input type="radio" class="form-check-input" name="price"
+									th:attr="checked=${checkPrice1}"
+									onclick="javascript: return false;">Dưới 1tr
+							</a>
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=2,t=${currentType},v=${currentVip})}">
+									<input type="radio" class="form-check-input" name="price"
+									th:attr="checked=${checkPrice2}"
+									onclick="javascript: return false;">Từ 1tr đến 3tr
+							</a>
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=3,t=${currentType},v=${currentVip})}">
+									<input type="radio" class="form-check-input" name="price"
+									th:attr="checked=${checkPrice3}"
+									onclick="javascript: return false;">Trên 3tr
+							</a>
+							</label>
+						</div>
+					</div>
+					<div class="chamber-filter">
+						<h2>Loại</h2>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=${currentPrice},t=single,v=${currentVip})}">
+									<input type="radio" class="form-check-input" name="type"
+									th:attr="checked=${checkType1}"
+									onclick="javascript: return false;">Phòng đơn
+							</a>
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=${currentPrice},t=couple,v=${currentVip})}">
+									<input type="radio" class="form-check-input" name="type"
+									th:attr="checked=${checkType2}"
+									onclick="javascript: return false;">Phòng đôi
+							</a>
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=${currentPrice},t=family,v=${currentVip})}">
+									<input type="radio" class="form-check-input" name="type"
+									th:attr="checked=${checkType3}"
+									onclick="javascript: return false;">Phòng gia đình
+							</a>
+							</label>
+						</div>
+					</div>
+					<div class="chamber-filter">
+						<h2>Vip</h2>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=${currentPrice},t=${currentType},v=true)}">
+									<input type="radio" class="form-check-input" name="vip"
+									th:attr="checked=${checkVip1}"
+									onclick="javascript: return false;">Phòng vip
+							</a>
+							</label>
+						</div>
+						<div class="form-check">
+							<label class="form-check-label"> <a
+								th:href="@{/check-in(p=${currentPrice},t=${currentType},v=false)}">
+									<input type="radio" class="form-check-input" name="vip"
+									th:attr="checked=${checkVip2}"
+									onclick="javascript: return false;">Phòng thường
+							</a>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-10">
+					<div class=" chamber-content">
+						<ul class="row">
+							<th:block th:each="chamber: ${chambers}">
+								<li class="item col-md-3">
+									<div class="item-content rounded show-info">
+										<img src="images/chamber.png" alt="Chamber">
+										<div class="number" th:utext="${chamber.chamberNumber}"></div>
+										<div class="price">
+											<span style="font-size: 15px; color: red">đ </span><span
+												th:utext="${chamber.priceDay}"></span>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox"
+												id="check-vip" th:attr="checked=${chamber.isVip}"> <label
+												class="form-check-label" for="check-vip"> Vip </label>
+										</div>
+										<input style="display: none;" type="checkbox"
+											id="check-status" th:attr="checked=${chamber.isEmpty}">
+										<input style="display: none;" type="text" id="chamberId"
+											th:attr="value=${chamber.chamberId}">
+									</div>
+								</li>
+							</th:block>
+						</ul>
+					</div>
+					<p class="float-left" style="margin-top: 30px">
+						Số phòng : <span style="color: red; font-weight: bold;"
+							th:utext="${totalElement}">0</span>
+					</p>
+					<nav aria-label="..."
+						style="float: right; margin-top: 20px; margin-right: 40px">
+						<ul class="pagination">
+							<li
+								th:class="${currentIndex == 1}? 'page-item disabled' : 'page-item'">
+								<a class="page-link" th:href="@{/check-in}">First</a>
+							</li>
+							<li
+								th:class="${currentIndex == 1}? 'page-item disabled': 'page-item' ">
+								<a class="page-link" aria-label="Previous"
+								th:href="@{|${baseUrl}${currentIndex-2}${filterUrl}|}"
+								title='Go to previous page'><span aria-hidden="true">«</span>
+									<span class="sr-only">Previous</span></a>
+							</li>
+							<li th:each="item : ${#numbers.sequence(beginIndex,endIndex)}"
+								th:class="${item == currentIndex ? 'page-item active' :'page-item' }">
+								<a class="page-link"
+								th:href="@{|${baseUrl}${item-1}${filterUrl}|}"> <span
+									th:text='${item}'>1</span>
+							</a>
+							</li>
+							<li class="page-item disabled" th:if="${extra}"><a
+								class="page-link" href=""> <span>...</span>
+							</a></li>
+							<li th:if="${checkLast}" class="page-item"><a
+								class="page-link"
+								th:href="@{|${baseUrl}${totalPageCount-1}${filterUrl}|}"> <span
+									th:text='${totalPageCount}'>6</span>
+							</a></li>
+							<li
+								th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled': 'page-item'">
+								<a class="page-link" aria-label="Next" title='Go to next page'
+								th:href="@{|${baseUrl}${currentIndex}$${filterUrl}|}"><span
+									aria-hidden="true">»</span> <span class="sr-only">Next</span></a>
+							</li>
+							<li
+								th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled':'page-item'">
+								<a class="page-link"
+								th:href="@{|${baseUrl}${totalPageCount-1}${filterUrl}|}">Last</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+
+			<div class="modal fade bd-example-modal-lg" tabindex="-1"
+				id="check-in" role="dialog" aria-labelledby="myLargeModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<form id="check-in-form">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h3 class="modal-title" style="font-weight: bold;">Đặt
+									phòng</h3>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body row" style="margin-left: 0;">
+								<div class="col-md-8"
+									style="border-right: #000 1px dotted; padding-right: 0;">
+									<h4>Thông tin khách hàng</h4>
+									<div class="row">
+										<div class="form-group col-md-6">
+											<label for="name" class="title-input">Họ tên<sup
+												class="required-field">*</sup></label> <input type="text"
+												class="form-control" placeholder="Họ tên..." required
+												id="name" name="name">
+										</div>
+										<div class="form-group col-md-6">
+											<label for="card" class="title-input">Căn cước<sup
+												class="required-field">*</sup></label> <input type="number"
+												class="form-control" placeholder="Số căn cước..." id="card"
+												name="card" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="birth" class="title-input">Ngày sinh<sup
+												class="required-field">*</sup></label> <input type="date"
+												class="form-control" placeholder="Ngày sinh..." id="birth"
+												name="birth" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="passport" class="title-input">Mã hộ
+												chiếu(nếu có)</label> <input type="text" class="form-control"
+												placeholder="Mã hộ chiếu..." id="passport" name="passport">
+										</div>
+										<div class="form-group col-md-6">
+											<label for="address" class="title-input">Địa chỉ<sup
+												class="required-field">*</sup></label> <input type="text"
+												class="form-control" placeholder="Địa chỉ..." id="address"
+												name="address" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="nationality" class="title-input">Quốc
+												tịch<sup class="required-field">*</sup>
+											</label> <input type="text" class="form-control"
+												placeholder="Quốc tịch..." id="nationality"
+												name="nationality" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="phone" class="title-input">Số điện thoại<sup
+												class="required-field">*</sup></label> <input type="number"
+												class="form-control" placeholder="Số điện thoại..."
+												id="phone" name="phone" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="email" class="title-input">Email(nếu có)</label>
+											<input type="email" class="form-control"
+												placeholder="Email..." id="email" name="email">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4" style="padding-left: 20px;">
+									<h4>Thông tin khác</h4>
+									<div class="form-group" style="margin-top: 40px">
+										<input type="text" class="form-control" id="chamber_number"
+											name="chamber_number" readonly>
+									</div>
+									<div class="form-group">
+										<input type="text" class="form-control" id="chamber_price"
+											name="chamber_price" readonly>
+									</div>
+									<div class="form-group">
+										<input type="text" class="form-control" id="chamber_type"
+											name="chamber_type" readonly>
+									</div>
+									<div class="form-group">
+										<label for="note">Ghi chú</label>
+										<textarea class="form-control" id="note" name="note" rows="4"></textarea>
+									</div>
+									<div class="form-group" style="display: none;">
+										<input type="text" class="form-control" id="chamber_id"
+											name="chamber_id">
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer" style="width: 100%">
+								<button type="submit" class="btn btn-primary"
+									id="check_in_button">Lưu</button>
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">Đóng</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div th:replace="~{starter::footer}"></div>
+	<div th:replace="~{starter::script}"></div>
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							$('.show-info')
+									.click(
+											function(e) {
+												e.preventDefault();//ngan trinh duyet ko xu ly nhu mac dinh
+												var href = "/find-chamber?id="
+														+ $('#chamberId').val();
+
+												if ($('#check-status').prop(
+														'checked')) {
+													$
+															.get(
+																	href,
+																	function(
+																			chambers,
+																			status) {
+																		$(
+																				'#chamber_id')
+																				.val(
+																						chambers.chamberId);
+																		$(
+																				'#chamber_number')
+																				.val(
+																						"Số phòng : "
+																								+ chambers.chamberNumber);
+																		$(
+																				'#chamber_price')
+																				.val(
+																						"Giá: "
+																								+ chambers.priceDay
+																								+ "đ/ngày");
+																		var type = $
+																				.trim(chambers.chamberType);
+																		switch (type) {
+																		case 'single':
+																			$(
+																					'#chamber_type')
+																					.val(
+																							"Loại phòng : Đơn");
+																			break;
+																		case 'couple':
+																			$(
+																					'#chamber_type')
+																					.val(
+																							"Loại phòng : Đôi");
+																			break;
+																		default:
+																			$(
+																					'#chamber_type')
+																					.val(
+																							"Loại phòng : Gia đình");
+																		}
+																	});
+
+													$('#check-in').modal();
+												} else {
+													alert("Phòng này đang có người ở! Vui lòng chọn phòng khác!");
+												}
+
+											});
+
+							$('input').click(function() {
+								this.select();
+							});
+
+							$("#check-in-form").submit(function(event) {
+								event.preventDefault();
+								fire_ajax_submit();
+							});
+
+						});
+
+		function fire_ajax_submit() {
+
+			var checkIn = {};
+
+			checkIn["name"] = $("#name").val();
+			checkIn["idCard"] = $("#card").val();
+			checkIn["birth"] = $("#birth").val();
+			checkIn["passport"] = $("#passport").val();
+			checkIn["address"] = $("#address").val();
+			checkIn["nationality"] = $("#nationality").val();
+			checkIn["phone"] = $("#phone").val();
+			checkIn["note"] = $("#note").val();
+			checkIn["chamberId"] = $("#chamber_id").val();
+			checkIn["email"] = $('#email').val();
+
+			$("#check_in_button").prop("disabled", true);
+
+			$.ajax({
+				type : "POST",
+				contentType : "application/json",
+				url : "/rent-chamber",
+				data : JSON.stringify(checkIn),
+				dataType : 'json',
+				cache : false,
+				timeout : 600000,
+				success : function(data) {
+					console.log("Success : ", data);
+					alert(data.message);
+					$("#check_in_button").prop("disabled", false); // enabled save button
+					$("#check-in-form")[0].reset(); // reset modal element
+					$('#check-in').modal('toggle'); //close modal
+					location.reload(); //reload this page
+				},
+				error : function(data) {
+					console.log("Error : ", data);
+					alert("Thông tin nhập lỗi!");
+					$("#check_in_button").prop("disabled", false);
+				}
+			});
+
+		}
+	</script>
+</body>
+</html>

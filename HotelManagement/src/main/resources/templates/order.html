@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{starter::head('Đặt món')}">
+</head>
+<style type="text/css">
+.form-group {
+	width: 100%;
+}
+
+.nav .active {
+	color: #fff;
+	background-color: #3366FF;
+}
+
+h2, h3 {
+	color: red;
+}
+</style>
+<body>
+	<div class="super_container">
+		<div th:replace="~{starter::header(3)}"></div>
+		<div th:replace="~{starter::header_content}"></div>
+		<div class="container" style="margin-top: 350px; margin-bottom: 50px;">
+			<div class="row" style="padding: 20px">
+				<ul class="nav nav-tabs" style="font-weight: bold;">
+					<li class="nav-item"><a class="nav-link active" href="#"
+						id="tab1">Nhà hàng</a></li>
+					<li class="nav-item"><a class="nav-link" href="#" id="tab2">Dịch
+							vụ khác</a></li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="row rounded"
+						style="border: black 2px groove; padding: 15px;">
+						<h3>Thông tin khách hàng...</h3>
+						<div class="form-group">
+							<label for="chamber_number" class="title-input">Số phòng</label> <select
+								class="custom-select" name="chamber_number" id="chamber_number">
+								<option disabled="disabled" selected="selected">Vui
+									lòng chọn phòng...</option>
+								<th:block th:each="item:${list_chambers}">
+									<option th:attr="value=${item}" th:utext="${item}"></option>
+								</th:block>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="guest_name" class="title-input">Tên khách hàng</label> <input
+								type="text" class="form-control" placeholder="Tên khách hàng..."
+								required id="guest_name" readonly="readonly">
+						</div>
+						<div class="form-group">
+							<label for="phone_number" class="title-input">Số điện
+								thoại</label> <input type="number" class="form-control"
+								placeholder="Số điện thoại..." required id="phone_number"
+								readonly="readonly">
+						</div>
+						<div class="form-check"
+							style="padding-left: 30px; padding-top: 10px;">
+							<input class="form-check-input" type="checkbox" id="vip"
+								onclick="javascript: return false;"> <label
+								class="form-check-label" for="vip"> Vip </label>
+						</div>
+						<div class="form-group" style="display: none;">
+							<input type="text" class="form-control" id="rental_id"
+								name="rental_id">
+						</div>
+					</div>
+					<div class="row rounded" id="tab1-sub"
+						style="border: black 2px groove; padding: 15px; margin-top: 20px; height: 505px">
+						<h3>Thông tin khác...</h3>
+						<div class="form-group">
+							<label for="amount_people" class="title-input">Số người</label> <input
+								type="number" class="form-control" placeholder="Số người..."
+								required id="amount_people" name="amount_people" min="1"
+								onkeypress="return (event.charCode != 45 && event.charCode != 46)">
+						</div>
+						<div class="form-group">
+							<label for="order_date" class="title-input">Ngày đặt</label> <input
+								type="date" class="form-control" placeholder="Ngày đặt..."
+								required id="order_date" name="order_date">
+						</div>
+						<div class="form-group">
+							<label for="note" class="title-input">Yêu cầu</label>
+							<textarea class="form-control" id="note" name="note" rows="7"></textarea>
+						</div>
+					</div>
+
+					<!--Start subTab2  -->
+					<div class="row rounded" id="tab2-sub"
+						style="border: black 2px groove; padding: 15px; margin-top: 20px; height: 505px; display: none">
+						<h3>Thông tin khác...</h3>
+						<div class="form-group" style="margin-top: -50px">
+							<label for="order_date-S" class="title-input">Ngày đặt</label> <input
+								type="date" class="form-control" placeholder="Ngày đặt..."
+								required id="order_date-S" name="order_date-S">
+						</div>
+						<div class="form-group" style="margin-top: -70px">
+							<label for="note" class="title-input">Ghi chú</label>
+							<textarea class="form-control" id="note-S" name="note-S" rows="8"></textarea>
+						</div>
+					</div>
+					<!--End subTab2  -->
+
+				</div>
+				<div class="col-md-8 rounded" id="tab1-col8"
+					style="border: black 2px groove; padding: 15px;">
+					<h2 style="text-align: center;">Thông tin đặt món</h2>
+					<div class="row" style="margin: 30px 0px">
+						<div class="col-md-8">
+							<div class="form-group">
+								<label for="food_item" class="title-input">Thức ăn, đồ
+									uống, đồ chay...</label> <select class="custom-select" name="food_item"
+									id="food_item">
+									<th:block th:each="item:${list_foods}">
+										<option th:attr="value=${item.id}" th:utext="${item.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="amount_food" class="title-input">Số lượng</label> <input
+									type="number" class="form-control" placeholder="Số lượng..."
+									required id="amount_food" name="amount_food"
+									onkeypress="return (event.charCode != 45 && event.charCode != 46)"
+									min="1">
+							</div>
+						</div>
+						<div class="col-md-1" style="margin-top: 32px;">
+							<button type="button" class="btn btn-primary" id="add_menu">
+								<i class="fas fa-tasks"></i>
+							</button>
+						</div>
+					</div>
+					<div class="row"
+						style="border: black 1px solid; height: 570px; margin-left: 0px;">
+						<div class="table-scroll col-md-12"
+							style="height: 400px; overflow: auto; padding: 0px; border-bottom: black 1px dotted;">
+							<table class="table table-hover table-bordered" id="order_table">
+								<thead>
+									<tr>
+										<th scope="col" style="text-align: center;">Tên món</th>
+										<th scope="col" style="text-align: center;">Số lượng</th>
+										<th scope="col" style="text-align: center;">Giá(VND)</th>
+										<th scope="col" style="text-align: center;">Tổng(VND)</th>
+										<th scope="col" style="text-align: center;">Hủy</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+						<div class="row">
+							<div class="col-md-3" style="padding-left: 30px">
+								<label for="discount" class="title-input">Giảm giá(%) :
+								</label> <input type="number" class="form-control" required
+									id="discount" name="discount" min="0"
+									onkeypress="return event.charCode != 45" max="100"
+									style="text-align: center;">
+							</div>
+							<div class="col-md-8">
+								<label for="total" class="title-input">Tổng thanh
+									toán(VND) : </label> <input type="text" class="form-control" id="total"
+									name="total" readonly="readonly" style="text-align: right;">
+							</div>
+							<div class="col-md-1">
+								<button type="button" class="btn btn-info"
+									onclick="calculatorTotalPrice()"
+									style="margin-right: 10px; margin-top: 30px">
+									<i class="fas fa-cash-register"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div style="margin-top: 30px; margin-left: 600px">
+							<button type="submit" class="btn btn-primary"
+								onclick="ajaxOrderFood()">
+								<i class="fas fa-print"></i> In hóa đơn
+							</button>
+						</div>
+					</div>
+				</div>
+				<!--Start tab2-->
+				<div class="col-md-8 rounded" id="tab2-col8"
+					style="border: black 2px groove; padding: 15px; display: none;">
+					<h2 style="text-align: center;">Thông tin dịch vụ</h2>
+					<div class="row" style="margin: 30px 0px">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="service_item" class="title-input">Chọn dịch
+									vụ...</label> <select class="custom-select" name="service_item"
+									id="service_item">
+									<th:block th:each="item:${list_services}">
+										<option th:attr="value=${item.id}" th:utext="${item.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<label for="price-service" class="title-input">Giá</label> <input
+								type="text" class="form-control" readonly="readonly"
+								id="price-service">
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label for="amount_service" class="title-input">Thời
+									gian</label> <input type="number" class="form-control" required
+									id="amount_service" name="amount_service"
+									onkeypress="return (event.charCode != 45 && event.charCode != 46)"
+									min="1">
+							</div>
+						</div>
+						<div class="col-md-1" style="margin-top: 32px;">
+							<button type="button" class="btn btn-primary" id="add_service">
+								<i class="fas fa-tasks"></i>
+							</button>
+						</div>
+					</div>
+					<div class="row"
+						style="border: black 1px solid; height: 570px; margin-left: 0px;">
+						<div class="table-scroll col-md-12"
+							style="height: 400px; overflow: auto; padding: 0px; border-bottom: black 1px dotted;">
+							<table class="table table-hover table-bordered"
+								id="order_table_service">
+								<thead>
+									<tr>
+										<th scope="col" style="text-align: center;">Tên dịch vụ</th>
+										<th scope="col" style="text-align: center;">Giá(VND/...)</th>
+										<th scope="col" style="text-align: center;">Thời gian</th>
+										<th scope="col" style="text-align: center;">Tổng(VND)</th>
+										<th scope="col" style="text-align: center;">Hủy</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+						<div class="row">
+							<div class="col-md-3" style="padding-left: 30px">
+								<label for="discount-S" class="title-input">Giảm giá(%)
+									: </label> <input type="number" class="form-control" required
+									id="discount-S" name="discount-S" min="0"
+									onkeypress="return event.charCode != 45" max="100"
+									style="text-align: center;">
+							</div>
+							<div class="col-md-8">
+								<label for="total-S" class="title-input">Tổng thanh
+									toán(VND) : </label> <input type="text" class="form-control"
+									id="total-S" name="total-S" readonly="readonly"
+									style="text-align: right;">
+							</div>
+							<div class="col-md-1">
+								<button type="button" class="btn btn-info"
+									onclick="calculatorTotalServicePrice()"
+									style="margin-right: 10px; margin-top: 30px">
+									<i class="fas fa-cash-register"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div style="margin-top: 30px; margin-left: 600px">
+							<button type="submit" class="btn btn-primary"
+								onclick="ajaxOrderService()">
+								<i class="fas fa-print"></i> In hóa đơn
+							</button>
+						</div>
+					</div>
+				</div>
+				<!--End tab2-->
+			</div>
+			<div class="row"></div>
+		</div>
+	</div>
+	<div th:replace="~{starter::footer}"></div>
+	<div th:replace="~{starter::script}"></div>
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+
+							$('input').click(function() {
+								this.select();
+							});
+
+							$('#chamber_number')
+									.change(
+											function() {
+												var url = "/order/find-guest?number="
+														+ this.value;
+												$
+														.get(
+																url,
+																function(data,
+																		status) {
+																	$(
+																			'#guest_name')
+																			.val(
+																					data.name);
+																	$(
+																			'#phone_number')
+																			.val(
+																					data.phone);
+																	if (data.vip == 'true') {
+																		$(
+																				'#vip')
+																				.prop(
+																						'checked',
+																						true);
+																	} else {
+																		$(
+																				'#vip')
+																				.prop(
+																						'checked',
+																						false);
+																	}
+																	$(
+																			'#rental_id')
+																			.val(
+																					data.rentalId);
+																});
+											});
+
+							$('#add_menu')
+									.click(
+											function(e) { // them 1 mon moi
+												var id = $('#food_item').val();
+												var quantity = $('#amount_food')
+														.val();
+												if (id != null
+														&& quantity != ''
+														&& parseInt(id) > 0) {
+													var url = "/order/add-menu?id="
+															+ id
+															+ "&q="
+															+ quantity;
+													$
+															.get(
+																	url,
+																	function(
+																			data,
+																			status) {
+																		$(
+																				'#order_table')
+																				.append(
+																						"<tr><td style='text-align:center'>"
+																								+ data.name
+																								+ "</td><td style='text-align:center'>"
+																								+ data.quantity
+																								+ "</td><td style='text-align:center' class='food_price'>"
+																								+ data.price
+																								+ "</td><td style='text-align:center'>"
+																								+ "<span class='total_price'>"
+																								+ data.total
+																								+ "</span>"
+																								+ "</td><td style='text-align: center'><button class='btn btn-danger text-white dBtn'><i class='fas fa-trash'></i></button></td></tr>");
+																	});
+												} else {
+													alert('Vui lòng chọn món và số lượng!');
+												}
+											});
+
+							$('#add_service')
+									.click(
+											function(e) {
+												var id = $('#service_item')
+														.val();
+												var quantity = $(
+														'#amount_service')
+														.val();
+												var url = "/order/add-service?id="
+														+ id + "&q=" + quantity;
+												;
+												if (id != null) {
+													$
+															.get(
+																	url,
+																	function(
+																			data,
+																			status) {
+																		$(
+																				'#order_table_service')
+																				.append(
+																						"<tr><td style='text-align:center'>"
+																								+ data.name
+																								+ "</td><td style='text-align:center'>"
+																								+ data.price
+																								+ "</td><td style='text-align:center'>"
+																								+ data.time
+																								+ "</td><td style='text-align:center'>"
+																								+ "<span class='total_price_S'>"
+																								+ data.total
+																								+ "</span>"
+																								+ "</td><td style='text-align: center'><button class='btn btn-danger text-white dBtn-S'><i class='fas fa-trash'></i></button></td></tr>");
+																	});
+												} else {
+													alert('Vui lòng chọn dịch vụ!');
+												}
+											});
+
+							$('#discount').change(function() {
+								calculatorTotalPrice();
+							});
+
+							$('#discount-S').change(function() {
+								calculatorTotalServicePrice();
+							});
+
+							$('#tab1').click(function() {
+								$(this).addClass("active");
+								$('#tab2').removeClass("active");
+								$('#tab1-col8').show();
+								$('#tab1-sub').show();
+								$('#tab2-col8').hide();
+								$('#tab2-sub').hide();
+							});
+
+							$('#tab2').click(function() {
+								$(this).addClass("active");
+								$('#tab1').removeClass("active");
+								$('#tab1-col8').hide();
+								$('#tab1-sub').hide();
+								$('#tab2-col8').show();
+								$('#tab2-sub').show();
+							});
+
+							$('#service_item').change(function() {
+								var id = $('#service_item').val();
+								var url = "/order/service-price?id=" + id;
+								$.get(url, function(data, status) {
+									$('#price-service').val(data.message);
+								});
+							});
+
+						});
+
+		$(document).on('click', 'button.dBtn', function() { // xoa 1 mon an
+			$(this).closest('tr').remove();
+			return false;
+		});
+
+		$(document).on('click', 'button.dBtn-S', function() { // xoa 1 dich vu
+			$(this).closest('tr').remove();
+			return false;
+		});
+
+		function calculatorTotalPrice() { // ham tinh tien mon an
+			var array = [];
+			var sum = 0;
+
+			$('#order_table tr').each(function() {
+				var price = $(this).find(".total_price").html();
+				array.push(price);
+			});
+
+			for (i = 1; i < array.length; i++) {
+				sum += parseInt(array[i]);
+			}
+
+			var discount = $('#discount').val();
+			var result = sum - (sum / 100 * discount);
+			$('#total').val(result);
+// 			$('#total').simpleMoneyFormat();// ham dinh dang tien te
+		}
+
+		function calculatorTotalServicePrice() { // ham tinh tien dich vu
+			var array = [];
+			var sum = 0;
+
+			$('#order_table_service tr').each(function() {
+				var price = $(this).find(".total_price_S").html();
+				array.push(price);
+			});
+
+			for (i = 1; i < array.length; i++) {
+				sum += parseInt(array[i]);
+			}
+
+			var discount = $('#discount-S').val();
+			var result = sum - (sum / 100 * discount);
+			$('#total-S').val(result);
+// 			$('#total-S').simpleMoneyFormat();// ham dinh dang tien te
+		}
+
+		function ajaxOrderFood() {
+
+			var orderFood = {};
+			var id = $('#rental_id').val();
+			var number = $('#amount_people').val();
+			var date = $('#order_date').val();
+			var note = $('#note').val();
+			var discount;
+			if ($('#discount').val() == '') {
+				discount = 0;
+			} else {
+				discount = $('#discount').val();
+			}
+			var total = $('#total').val();
+			if (id != '' && number != '' && date != '' && total != '') {
+
+				orderFood["rentalId"] = id;
+				orderFood["peopleNumber"] = number;
+				orderFood["orderDate"] = date;
+				orderFood["note"] = note;
+				orderFood["discount"] = discount;
+				orderFood["totalPrice"] = total;
+
+				$.ajax({
+					type : "post",
+					contentType : "application/json",
+					url : "/order/order-food",
+					data : JSON.stringify(orderFood),
+					dataType : "json",
+					cache : false,
+					timeout : 600000,
+					success : function(data) {
+						console.log("Success : " + data);
+						alert(data.message);
+						location.reload();// reload this page
+					},
+					error : function(data) {
+						console.log("Error : " + data);
+						alert("Thao tác lỗi!");
+					}
+				});
+
+			} else {
+				alert('Vui lòng nhập đầy đủ thông tin!');
+			}
+		}
+
+		function ajaxOrderService() {
+
+			var orderService = {};
+			var id = $('#rental_id').val();
+			var date = $('#order_date-S').val();
+			var note = $('#note-S').val();
+			var discount;
+			if ($('#discount-S').val() == '') {
+				discount = 0;
+			} else {
+				discount = $('#discount-S').val();
+			}
+			var total = $('#total-S').val();
+			if (id != '' && date != '' && total != '') {
+
+				orderService["rentalId"] = id;
+				orderService["orderDate"] = date;
+				orderService["note"] = note;
+				orderService["discount"] = discount;
+				orderService["totalPrice"] = total;
+
+				$.ajax({
+					type : "post",
+					contentType : "application/json",
+					url : "/order/order-service",
+					data : JSON.stringify(orderService),
+					dataType : "json",
+					cache : false,
+					timeout : 600000,
+					success : function(data) {
+						console.log("Success : " + data);
+						alert(data.message);
+						location.reload();// reload this page
+					},
+					error : function(data) {
+						console.log("Error : " + data);
+						alert("Thao tác lỗi!");
+					}
+				});
+
+			} else {
+				alert('Vui lòng nhập đầy đủ thông tin!');
+			}
+		}
+	</script>
+</body>
+</html>

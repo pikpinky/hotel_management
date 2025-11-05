@@ -1,0 +1,28 @@
+.bar-p {
+ 	margin-right: 5px;
+
+}
+
+.bar-p-dropdown {
+  display: none;
+  position: absolute;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+  background-color: #2E2E2E;
+}
+.bar-p-dropdown a {
+  color: white;
+  padding: 10px 1px;
+  text-decoration: none;
+  display: block;
+}
+
+.bar-p:hover .bar-p-dropdown {
+  display: block;
+  color: #FF8000;
+}
+a:hover {
+	color: orange;
+}

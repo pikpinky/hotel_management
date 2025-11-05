@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{starter::head('Check-in')}">
+</head>
+<body>
+	<div class="super_container">
+		<div th:replace="~{starter::header(2)}"></div>
+		<div th:replace="~{starter::header_content}"></div>
+		<div class="container" style="margin-top: 350px; margin-bottom: 50px">
+			<div class="row">
+				<div class="col-md-5">
+					<div class="row rounded"
+						style="border: black 2px groove; padding: 15px;">
+						<h3 style="color: red;">Thông tin phòng</h3>
+						<input type="text" id="id" style="display: none;">
+						<div class="form-group col-md-12">
+							<label for="number" class="title-input">Số phòng</label> <select
+								class="custom-select" name="chamber_number" id="chamber_number">
+								<option disabled="disabled" selected="selected">Vui
+									lòng chọn phòng...</option>
+								<th:block th:each="item:${list_chambers}">
+									<option th:attr="value=${item}" th:utext="${item}"></option>
+								</th:block>
+							</select>
+						</div>
+						<div class="form-group col-md-12">
+							<label for="number" class="title-input">Loại phòng</label> <input
+								type="text" class="form-control" id="type" readonly="readonly">
+						</div>
+						<div class="form-group col-md-12">
+							<label for="phone_number" class="title-input">Giá(VND)</label> <input
+								type="text" class="form-control" id="price" readonly="readonly">
+						</div>
+						<div class="form-check col-md-12"
+							style="padding-left: 40px; padding-bottom: 10px;">
+							<input class="form-check-input" type="checkbox" id="vip"
+								onclick="javascript: return false;"> <label
+								class="form-check-label" for="vip">Vip </label>
+						</div>
+					</div>
+					<div class="row rounded"
+						style="border: black 2px groove; padding: 15px; margin-top: 20px;">
+						<h3 style="color: red;">Thông tin khách hàng</h3>
+						<div class="row" style="margin-left: 0px">
+							<div class="form-group col-md-6">
+								<label for="name" class="title-input">Họ tên</label> <input
+									type="text" class="form-control" required id="name" name="name"
+									readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="card" class="title-input">Căn cước</label> <input
+									type="number" class="form-control" id="card" name="card"
+									required readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="birth" class="title-input">Ngày sinh</label> <input
+									type="text" class="form-control" id="birth" name="birth"
+									required readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="passport" class="title-input">Mã hộ chiếu</label> <input
+									type="text" class="form-control" id="passport" name="passport"
+									readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="address" class="title-input">Địa chỉ</label> <input
+									type="text" class="form-control" id="address" name="address"
+									required readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="nationality" class="title-input">Quốc tịch </label>
+								<input type="text" class="form-control" id="nationality"
+									name="nationality" required readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="phone" class="title-input">Số điện thoại</label> <input
+									type="number" class="form-control" id="phone" name="phone"
+									required readonly="readonly">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="email" class="title-input">Email</label> <input
+									type="email" class="form-control" id="email" name="email"
+									readonly="readonly">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-7">
+					<div class="row rounded"
+						style="border: black 2px groove; padding: 15px; height: 815px;">
+						<div class="col-md-12" style="text-align: center;">
+							<h2 style="color: red;">Thông tin thuê phòng</h2>
+						</div>
+						<div class="form-group col-md-8">
+							<label for="address" class="title-input">Ngày đặt phòng</label> <input
+								type="text" class="form-control" id="check-in-date"
+								name="check-in-date" required readonly="readonly">
+						</div>
+						<div class="form-group col-md-4">
+							<label for="address" class="title-input">Số ngày ở</label> <input
+								type="text" class="form-control" id="stay" name="stay" required
+								readonly="readonly">
+						</div>
+						<div class="col-md-12 form-inline" style="margin-bottom: 8px">
+							<label for="address" class="title-input">Sinh hoạt phí</label>
+						</div>
+						<div class="col-md-12">
+							<div class="form-inline"
+								style="border: black 1px dotted; padding: 0 15px">
+								<div class="form-group" style="width: 100%; padding: 15px 0">
+									<label for="address" class="title-input col-md-4">Thuê
+										phòng(VND):</label> <input type="text" class="form-control col-md-8"
+										id="rent" name="rent" required readonly="readonly">
+								</div>
+								<div class="form-group" style="width: 100%; padding: 15px 0">
+									<label for="address" class="title-input col-md-4">Nhà
+										hàng(VND):</label> <input type="text" class="form-control col-md-8"
+										readonly="readonly" id="food" name="food" required>
+								</div>
+								<div class="form-group" style="width: 100%; padding: 15px 0">
+									<label for="address" class="title-input col-md-4">Dịch
+										vụ khác(VND):</label> <input type="text" class="form-control col-md-8"
+										readonly="readonly" id="service" name="service" required>
+								</div>
+								<div class="form-group" style="width: 100%; padding: 15px 0">
+									<label for="address" class="title-input col-md-4">Tổng(VND):</label>
+									<input type="text" class="form-control col-md-8"
+										readonly="readonly" id="total" name="total" required>
+									<input type="text" id="total-T" style="display: none;">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12" style="margin-top: 20px">
+							<div class="form-group">
+								<label for="address" class="title-input">Ghi chú đặt
+									phòng</label>
+								<textarea class="form-control" id="note" name="note" rows="3"
+									readonly="readonly"></textarea>
+							</div>
+						</div>
+						<div class="form-group col-md-5">
+							<label for="address" class="title-input">Phụ phí (cộng
+								thêm)</label> <input type="text" class="form-control"
+								placeholder="Nhập phụ phí..." id="up" name="up">
+						</div>
+						<div class="form-group col-md-5">
+							<label for="address" class="title-input">Giảm trừ</label> <input
+								type="text" class="form-control" id="down" name="down"
+								placeholder="Nhập giảm trừ...">
+						</div>
+						<div class="form-group col-md-2">
+							<button type="submit" class="btn btn-warning"
+								style="margin-top: 30px" onclick="calculateTotalPayment(true)">
+								<i class="fas fa-cash-register"></i>
+							</button>
+						</div>
+						<div class="form-group col-md-12">
+							<label for="address" class="title-input">Tổng thanh toán</label>
+							<input type="text" class="form-control" id="total-pay"
+								name="total-pay" required readonly="readonly">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div style="margin: 30px 30px; float: right;">
+						<button type="submit" class="btn btn-primary">
+							<i class="fas fa-print"></i> In hóa đơn
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{starter::footer}"></div>
+	<div th:replace="~{starter::script}"></div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#chamber_number').change(function() {
+				var url = "/check-out/get-check-out-info?number=" + this.value;
+				$.get(url, function(data, status) {
+					var type = $.trim(data.type);
+					switch (type) {
+					case 'single':
+						$('#type').val("Đơn");
+						break;
+					case 'couple':
+						$('#type').val("Đôi");
+						break;
+					default:
+						$('#type').val("Gia đình");
+					}
+					if (data.vip == 'true') {
+						$('#vip').prop('checked', true);
+					} else {
+						$('#vip').prop('checked', false);
+					}
+					$('#id').val(data.rentalId);
+					$('#price').val(data.price);
+					$('#name').val(data.name);
+					$('#card').val(data.card);
+					$('#birth').val(data.birth);
+					$('#passport').val(data.passport);
+					$('#address').val(data.address);
+					$('#nationality').val(data.nationality);
+					$('#phone').val(data.phone);
+					$('#email').val(data.email);
+					$('#check-in-date').val(data.checkInDate);
+					$('#stay').val(data.numberStay);
+					$('#rent').val(data.rent);
+					$('#food').val(data.food);
+					$('#service').val(data.service);
+					$('#total').val(data.total);
+					$('#total-T').val(data.total);
+					$('#note').val(data.note);
+					$('#total-pay').val(data.total);
+
+					$('#price').simpleMoneyFormat();
+					$('#rent').simpleMoneyFormat();
+					$('#food').simpleMoneyFormat();
+					$('#service').simpleMoneyFormat();
+					$('#total').simpleMoneyFormat();
+				});
+			});
+
+			$('input').click(function() {
+				this.select();
+			});
+
+		});
+
+		function calculateTotalPayment(value) {
+			var total = 0;
+			var up = 0;
+			var down = 0;
+			if ($('#total-T').val() != '') {
+				total = parseInt($('#total-T').val());
+			}
+			if ($('#up').val() != '') {
+				up = parseInt($('#up').val());
+			}
+			if ($('#down').val() != '') {
+				down = parseInt($('#down').val());
+			}
+			if (value == true) {
+				$('#total-pay').val(total + up - down);
+			} else {
+				$('#total-pay').val(total + up - down);
+			}
+		}
+	</script>
+</body>
+</html>

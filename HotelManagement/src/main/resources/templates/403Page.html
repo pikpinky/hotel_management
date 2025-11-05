@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<title>Không có quyền truy cập</title>
+    <meta charset="utf-8">
+<body>
+
+    <h3 th:if="${message != null}" th:utext="${message}" style="color: red;"></h3>
+    <div th:if="${userInfo != null}" th:utext="${userInfo}"></div>
+</div>
+</body>
+
+</html>

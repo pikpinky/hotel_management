@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{starter::head('Quản lý dịch vụ')}">
+</head>
+<body>
+	<div class="super_container">
+		<div th:replace="~{starter::header(6)}"></div>
+		<div th:replace="~{starter::header_content}"></div>
+		<div class="container"
+			style="margin-top: 350px; margin-bottom: 50px; height: 1000px">
+			<div class="row" style="padding: 20px 0 50px;">
+				<ul class="nav nav-tabs" style="font-weight: bold;">
+					<li class="nav-item"><a class="nav-link active" href="#"
+						id="tab1">Nhà hàng</a></li>
+					<li class="nav-item"><a class="nav-link" href="#" id="tab2">Dịch
+							vụ khác</a></li>
+				</ul>
+			</div>
+			<div class="row" id="tab1-table">
+				<div class="col-md-6" style="float: left;">
+					<button type="button" class="btn btn-success aBtn">
+						<i class="fas fa-hamburger"></i> Thêm
+					</button>
+					<button type="button" class="btn btn-info">
+						<i class="fas fa-clipboard-list"></i> Qlý thể loại
+					</button>
+				</div>
+				<form class="col-md-6" th:action="@{/service(page=0)}" method="get">
+					<div class="form-group" style="width: 75%; float: right;">
+						<input type="search" class="form-control" id="search-box"
+							aria-describedby="search-box" placeholder="Search..."
+							name="search-text" th:attr="value=${searchText}">
+					</div>
+				</form>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-light">
+						<tr>
+							<th style="text-align: center">Stt</th>
+							<th style="text-align: center; display: none">ID</th>
+							<th style="text-align: center">Tên</th>
+							<th style="text-align: center">Giá</th>
+							<th style="text-align: center">Miêu tả</th>
+							<th style="text-align: center">Thể loại</th>
+							<th style="text-align: center">Sửa</th>
+							<th style="text-align: center">Xóa</th>
+						</tr>
+					</thead>
+					<tfoot class="thead-light">
+						<tr>
+							<th style="text-align: center">Stt</th>
+							<th style="text-align: center; display: none">ID</th>
+							<th style="text-align: center">Tên</th>
+							<th style="text-align: center">Giá</th>
+							<th style="text-align: center">Miêu tả</th>
+							<th style="text-align: center">Thể loại</th>
+							<th style="text-align: center">Sửa</th>
+							<th style="text-align: center">Xóa</th>
+						</tr>
+					</tfoot>
+
+					<tbody>
+						<th:block th:each="food,item:${foods}">
+							<tr>
+								<td style="text-align: center; font-weight: bold;"
+									th:utext="${item.count}"></td>
+								<td style="display: none;"></td>
+								<td th:utext="${food.name}" style="text-align: center"></td>
+								<td th:utext="${food.price}" style="text-align: center"></td>
+								<td th:utext="${food.description}" style="text-align: center"></td>
+								<td th:utext="${food.category}" style="text-align: center"></td>
+								<td style="text-align: center"><a
+									class="btn btn-primary text-white eBtn"
+									th:href="@{/service/find-food(id=${food.id})}"><i
+										class="fas fa-pencil-alt"></i></a></td>
+								<td style="text-align: center"><a
+									class="btn btn-danger text-white dBtn"
+									th:href="@{/service/find-food(id=${food.id})}"><i
+										class="fas fa-trash"></i></a></td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+				<div class="col-md-6"
+					style="float: left; margin-top: 26px; font-size: 17px">
+					<p>
+						Số lượng : <span th:utext="${totalElement}"
+							style="color: red; font-weight: bold;"></span>
+					</p>
+				</div>
+				<nav class="col-md-6" aria-label="..." style="margin-top: 20px;">
+					<ul class="pagination" style="float: right;">
+						<li
+							th:class="${currentIndex == 1}? 'page-item disabled' : 'page-item'">
+							<a class="page-link" th:href="@{/service}">First</a>
+						</li>
+						<li
+							th:class="${currentIndex == 1}? 'page-item disabled': 'page-item' ">
+							<a class="page-link" aria-label="Previous"
+							th:href="@{|${baseUrl}${currentIndex-2}${searchUrl}|}"
+							title='Go to previous page'><span aria-hidden="true">«</span>
+								<span class="sr-only">Previous</span></a>
+						</li>
+						<li th:each="item : ${#numbers.sequence(beginIndex,endIndex)}"
+							th:class="${item == currentIndex ? 'page-item active' :'page-item' }">
+							<a class="page-link"
+							th:href="@{|${baseUrl}${item-1}${searchUrl}|}"> <span
+								th:text='${item}'>1</span>
+						</a>
+						</li>
+						<li class="page-item disabled" th:if="${extra}"><a
+							class="page-link" href=""> <span>...</span>
+						</a></li>
+						<li th:if="${checkLast}" class="page-item"><a
+							class="page-link" th:href="@{|${baseUrl}${totalPageCount-1}|}">
+								<span th:text='${totalPageCount}'>6</span>
+						</a></li>
+						<li
+							th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled': 'page-item'">
+							<a class="page-link" aria-label="Next" title='Go to next page'
+							th:href="@{|${baseUrl}${currentIndex}${searchUrl}|}"><span
+								aria-hidden="true">»</span> <span class="sr-only">Next</span></a>
+						</li>
+						<li
+							th:class="${currentIndex == totalPageCount || totalPageCount == 0}? 'page-item disabled':'page-item'">
+							<a class="page-link" th:href="@{|${baseUrl}${totalPageCount-1}|}">Last</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<!--Start Tab2-->
+
+			<div class="row" id="tab2-table" style="display: none;">
+				<div class="col-md-6" style="float: left;">
+					<button type="button" class="btn btn-success aBtn-S"
+						style="margin-bottom: 10px">
+						<i class="fas fa-spa"></i> Thêm
+					</button>
+				</div>
+				<form class="col-md-6">
+					<div class="form-group" style="width: 75%; float: right;">
+						<input type="search" class="form-control" id="search-box"
+							aria-describedby="search-box" placeholder="Search..."
+							name="search-text">
+					</div>
+				</form>
+				<div
+					style="height: 700px; overflow: auto; border: #dee2e6 1px solid; border-radius: 3px; width: 100%">
+					<table class="table table-hover table-bordered">
+						<thead class="thead-light">
+							<tr>
+								<th style="text-align: center; position: sticky; top: 0;">Stt</th>
+								<th style="text-align: center; display: none">ID</th>
+								<th style="text-align: center; position: sticky; top: 0;">Tên</th>
+								<th style="text-align: center; position: sticky; top: 0;">Giá</th>
+								<th style="text-align: center; position: sticky; top: 0;">Đơn
+									vị tính</th>
+								<th style="text-align: center; position: sticky; top: 0;'">Ghi
+									chú</th>
+								<th style="text-align: center; position: sticky; top: 0;">Miêu
+									tả</th>
+								<th style="text-align: center; position: sticky; top: 0;">Sửa</th>
+								<th style="text-align: center; position: sticky; top: 0;'">Xóa</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="service,item:${services}">
+								<tr>
+									<td style="text-align: center; font-weight: bold;"
+										th:utext="${item.count}"></td>
+									<td th:utext="${service.id}" style="display: none;"></td>
+									<td th:utext="${service.name}" style="text-align: center"></td>
+									<td th:utext="${service.price}" style="text-align: center"></td>
+									<td th:utext="${service.unit}" style="text-align: center"></td>
+									<td th:utext="${service.note}" style="text-align: center"></td>
+									<td th:utext="${service.description}"
+										style="text-align: center"></td>
+									<td style="text-align: center"><a
+										class="btn btn-primary text-white eBtn-S"
+										th:href="@{/service/find-service(id=${service.id})}"><i
+											class="fas fa-pencil-alt"></i></a></td>
+									<td style="text-align: center"><a
+										class="btn btn-danger text-white dBtn-S"
+										th:href="@{/service/find-service(id=${service.id})}"><i
+											class="fas fa-trash"></i></a></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!--End Tab2-->
+
+			<div class="modal fade" id="updateData" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document"
+					style="margin-top: 50px">
+					<div class="modal-content">
+						<form method="post" th:action="@{/service/update-food}">
+							<div class="modal-header">
+								<h5 class="modal-title" style="font-weight: bold;">Cập nhật
+									thông tin món ăn</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body row" style="margin-left: 0;">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="category" class="title-input">Thể loại</label> <select
+											class="custom-select" name="category" id="category">
+											<th:block th:each="item:${categories}">
+												<option th:attr="value=${item.categoryId}"
+													th:utext="${item.categoryName}"></option>
+											</th:block>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="name" class="title-input">Tên món</label> <input
+											type="text" class="form-control" placeholder="Tên món..."
+											required id="name" name="name">
+									</div>
+									<div class="form-group">
+										<label for="price" class="title-input">Giá</label> <input
+											type="number" class="form-control" placeholder="Giá..."
+											id="price" name="price" min="1"
+											onkeypress="return (event.charCode != 45)">
+									</div>
+									<div class="form-group" style="display: none;">
+										<input type="text" class="form-control" id="id" name="id">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="description">Miêu tả</label>
+										<textarea class="form-control" id="description"
+											name="description" rows="9"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer" style="width: 100%">
+								<button type="submit" class="btn btn-primary">Lưu</button>
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">Đóng</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- Start Update Modal tab 2 -->
+			<div class="modal fade" id="updateDataTab2" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalCenterTitle"
+				aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document"
+					style="margin-top: 50px">
+					<div class="modal-content">
+						<form method="post" th:action="@{/service/update-service}">
+							<div class="modal-header">
+								<h5 class="modal-title" style="font-weight: bold;">Cập nhật
+									thông tin dịch vụ</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body row" style="margin-left: 0;">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="name-S" class="title-input">Tên dịch vụ</label> <input
+											type="text" class="form-control" placeholder="Tên dịch vụ..."
+											required id="name-S" name="name-S">
+									</div>
+									<div class="form-group">
+										<label for="price-S" class="title-input">Giá</label> <input
+											type="text" class="form-control" placeholder="Giá..."
+											required id="price-S" name="price-S">
+									</div>
+									<div class="form-group">
+										<label for="unit-S" class="title-input">Đơn vị tính</label> <input
+											type="text" class="form-control" placeholder="Đơn vị tính..."
+											required id="unit-S" name="unit-S">
+									</div>
+									<div class="form-group" style="display: none;">
+										<input type="text" class="form-control" id="id-S" name="id-S">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="note-S">Ghi chú</label>
+										<textarea class="form-control" id="note-S" name="note-S"
+											rows="8"></textarea>
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="form-group">
+										<label for="description-S">Miêu tả</label>
+										<textarea class="form-control" id="description-S"
+											name="description-S" rows="3"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer" style="width: 100%">
+								<button type="submit" class="btn btn-primary">Lưu</button>
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">Đóng</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End Update Modal tab 2 -->
+
+			<!--Delete Modal Tab 1 -->
+			<div class="modal fade" tabindex="-1" id="deleteModal" role="dialog">
+				<div class="modal-dialog" role="document" style="margin-top: 100px">
+					<form th:action="@{/service/delete-food}" method="post">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Xác nhận xóa</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<p>
+									<i class="fas fa-exclamation-triangle text-warning"
+										style="margin-right: 5px"></i>Bạn có chắc chắn muốn xóa món ăn
+									này không? <input type="text" name="id" id="delete_id"
+										style="display: none;">
+								</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success"
+									data-dismiss="modal">Hủy</button>
+								<button type="submit" class="btn btn-danger">Xóa</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!--Delete Modal Tab 2 -->
+			<div class="modal fade" tabindex="-1" id="deleteModalTab2"
+				role="dialog">
+				<div class="modal-dialog" role="document" style="margin-top: 100px">
+					<form th:action="@{/service/delete-service}" method="post">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Xác nhận xóa</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<p>
+									<i class="fas fa-exclamation-triangle text-warning"
+										style="margin-right: 5px"></i>Bạn có chắc chắn muốn xóa dịch
+									vụ này không? <input type="text" name="idService" id="idService" style="display: none;">
+								</p>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success"
+									data-dismiss="modal">Hủy</button>
+								<button type="submit" class="btn btn-danger">Xóa</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{starter::footer}"></div>
+	<div th:replace="~{starter::script}"></div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+			$('.eBtn,.aBtn').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				var text = $(this).text();
+				if (text == '') {
+					$.get(href, function(food, status) {
+						$('#name').val(food.name);
+						$('#price').val(food.price);
+						$('#description').val(food.description);
+						$('#id').val(food.id);
+					});
+					$('#updateData').modal();
+				} else {
+					$('#name').val('');
+					$('#price').val('');
+					$('#description').val('');
+					$('#id').val('');
+					$('#updateData').modal();
+				}
+			});
+
+			$('.dBtn').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				$.get(href, function(food, status) {
+					$('#delete_id').val(food.id);
+				});
+				$('#deleteModal').modal();
+			});
+
+			$('.eBtn-S,.aBtn-S').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				var text = $(this).text();
+				if (text == '') {
+					$.get(href, function(service, status) {
+						$('#name-S').val(service.name);
+						$('#price-S').val(service.price);
+						$('#unit-S').val(service.unit);
+						$('#note-S').val(service.note);
+						$('#description-S').val(service.description);
+						$('#id-S').val(service.id);
+					});
+					$('#updateDataTab2').modal();
+				} else {
+					$('#name-S').val("");
+					$('#price-S').val("");
+					$('#unit-S').val("");
+					$('#note-S').val("");
+					$('#description-S').val("");
+					$('#id-S').val("");
+					$('#updateDataTab2').modal();
+				}
+			});
+
+			$('.dBtn-S').click(function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				$.get(href, function(service, status) {
+					$('#idService').val(service.id);
+				});
+				$('#deleteModalTab2').modal();
+			});
+
+			$('input').click(function() {
+				this.select();
+			});
+
+			$('#tab1').click(function() {
+				$(this).addClass("active");
+				$('#tab2').removeClass("active");
+				$('#tab1-table').show();
+				$('#tab2-table').hide();
+			});
+
+			$('#tab2').click(function() {
+				$(this).addClass("active");
+				$('#tab1').removeClass("active");
+				$('#tab1-table').hide();
+				$('#tab2-table').show();
+			});
+
+		});
+	</script>
+</body>
+</html>
