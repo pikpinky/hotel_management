@@ -334,8 +334,8 @@ public class CheckInApiTest {
     private CheckInInfoDto createValidCheckInInfoDto() {
         CheckInInfoDto dto = new CheckInInfoDto();
         dto.setName("Nguyen Van A");
-        dto.setIdCard("123456789");
         dto.setBirth("1990-01-01");
+        dto.setIdCard("123456789");
         dto.setPassport("P123456");
         dto.setAddress("Ha Noi");
         dto.setNationality("Viet Nam");
@@ -344,5 +344,71 @@ public class CheckInApiTest {
         dto.setNote("Test check-in");
         dto.setChamberId(1L);
         return dto;
+    }
+
+    /**
+     * Test case TC-CHECKIN-012: Kiểm tra với CheckInInfoDto null.
+     * Expected: Throw NullPointerException.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testRentChamber_NullDto_ShouldHandleNull() {
+        Errors errors = new BeanPropertyBindingResult(new CheckInInfoDto(), "checkInInfoDto");
+
+        // Gọi phương thức với null - expect exception
+        checkInApi.getSearchResultViaAjax(null, errors);
+    }
+
+    /**
+     * Test case TC-CHECKIN-013: Kiểm tra với Errors null.
+     * Expected: Throw NullPointerException.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testRentChamber_NullErrors_ShouldHandleNull() {
+        CheckInInfoDto dto = createValidCheckInInfoDto();
+
+        // Gọi phương thức với null errors - expect exception
+        checkInApi.getSearchResultViaAjax(dto, null);
+    }
+
+    /**
+     * Test case TC-CHECKIN-014: Kiểm tra với chamber ID không tồn tại.
+     * Expected: Throw EntityNotFoundException.
+     */
+    @Test(expected = javax.persistence.EntityNotFoundException.class)
+    public void testRentChamber_InvalidChamberId_ShouldHandleInvalidId() {
+        CheckInInfoDto dto = createValidCheckInInfoDto();
+        dto.setChamberId(999L); // ID không tồn tại
+        Errors errors = new BeanPropertyBindingResult(dto, "checkInInfoDto");
+
+        // Gọi phương thức - expect exception
+        checkInApi.getSearchResultViaAjax(dto, errors);
+    }
+
+    /**
+     * Test case TC-CHECKIN-015: Kiểm tra với guest data duplicate nhưng không có lỗi validation.
+     * Expected: Xử lý duplicate logic.
+     */
+    @Test
+    public void testRentChamber_DuplicateGuestData_ShouldHandleDuplicate() {
+        // Chuẩn bị dữ liệu test
+        CheckInInfoDto dto = createValidCheckInInfoDto();
+        Errors errors = new BeanPropertyBindingResult(dto, "checkInInfoDto");
+
+        // Tạo guest với cùng idCard trong DB
+        Guest existingGuest = new Guest("Old Name", "1980-01-01", "123456789", "Old Passport", "Old Address", "VN", "0987654321", "old@email.com", "false", "false");
+        guestRepository.save(existingGuest);
+
+        // Tạo chamber
+        Chamber chamber = new Chamber("101", "single", "true", "100", "20", "note", "true");
+        chamber = chamberRepository.save(chamber);
+        dto.setChamberId(chamber.getChamberId());
+
+        // Gọi phương thức
+        ResponseEntity<?> response = checkInApi.getSearchResultViaAjax(dto, errors);
+
+        // Kiểm tra kết quả
+        assertNotNull(response);
+        // Verify guest được update, không tạo duplicate
+        assertEquals(1, guestRepository.count());
     }
 }

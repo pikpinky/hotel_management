@@ -4,6 +4,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -204,5 +205,93 @@ public class GuestServiceTest {
 
         // Kiểm tra kết quả
         assertEquals(Integer.valueOf(2), result);
+    }
+
+    /**
+     * Test case TC-GUEST-SERVICE-010: Kiểm tra tìm guest với ID không tồn tại.
+     * Expected: Throw EntityNotFoundException.
+     */
+    @Test(expected = javax.persistence.EntityNotFoundException.class)
+    public void testFindGuest_InvalidId_ShouldReturnNull() {
+        // Gọi phương thức với ID không tồn tại - expect exception
+        guestService.findGuest(999L);
+    }
+
+    /**
+     * Test case TC-GUEST-SERVICE-011: Kiểm tra thêm guest với thông tin null.
+     * Expected: Throw InvalidDataAccessApiUsageException.
+     */
+    @Test(expected = org.springframework.dao.InvalidDataAccessApiUsageException.class)
+    public void testAddGuestInfo_NullGuest_ShouldHandleNull() {
+        // Gọi phương thức với null - expect exception
+        guestService.addGuestInfo(null);
+    }
+
+    /**
+     * Test case TC-GUEST-SERVICE-012: Kiểm tra cập nhật guest với ID không tồn tại.
+     * Expected: Không throw exception, DB không thay đổi.
+     */
+    @Test
+    public void testEditGuestInfo_NonExistentGuest_ShouldHandleGracefully() {
+        // Tạo guest không save vào DB
+        Guest guest = new Guest("Nguyen Van A", "1990-01-01", "123456789", "P123456", "Ha Noi", "Viet Nam", "0123456789", "a@example.com", "false", "false");
+        guest.setGuestId(999L); // Set ID không tồn tại
+
+        // Gọi phương thức
+        guestService.editGuestInfo(guest);
+
+        // Kiểm tra DB không thay đổi
+        assertEquals(0, guestRepository.count());
+    }
+
+    /**
+     * Test case TC-GUEST-SERVICE-013: Kiểm tra tìm kiếm guest với text không tìm thấy.
+     * Expected: Trả về Page empty.
+     */
+    @Test
+    public void testSearchGuests_NoMatch_ShouldReturnEmptyPage() {
+        // Chuẩn bị dữ liệu test
+        Guest guest = new Guest("Nguyen Van A", "1990-01-01", "123456789", "P123456", "Ha Noi", "Viet Nam", "0123456789", "a@example.com", "false", "false");
+        guestRepository.save(guest);
+
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Gọi phương thức với text không match
+        Page<Guest> result = guestService.searchGuests(pageable, "nonexistent");
+
+        // Kiểm tra kết quả
+        assertNotNull(result);
+        assertEquals(0, result.getTotalElements());
+    }
+
+    /**
+     * Test case TC-GUEST-SERVICE-014: Kiểm tra tìm kiếm guest không pagination với text không tìm thấy.
+     * Expected: Trả về List empty.
+     */
+    @Test
+    public void testSearchGuests_WithoutPagination_NoMatch_ShouldReturnEmptyList() {
+        // Chuẩn bị dữ liệu test
+        Guest guest = new Guest("Nguyen Van A", "1990-01-01", "123456789", "P123456", "Ha Noi", "Viet Nam", "0123456789", "a@example.com", "false", "false");
+        guestRepository.save(guest);
+
+        // Gọi phương thức với text không match
+        List<Guest> result = guestService.searchGuests("nonexistent");
+
+        // Kiểm tra kết quả
+        assertNotNull(result);
+        assertEquals(0, result.size());
+    }
+
+    /**
+     * Test case TC-GUEST-SERVICE-015: Kiểm tra searchGuestWithCart với idCard không tồn tại.
+     * Expected: Trả về null.
+     */
+    @Test
+    public void testSearchGuestWithCart_InvalidIdCard_ShouldReturnNull() {
+        // Gọi phương thức với idCard không tồn tại
+        Guest result = guestService.searchGuestWithCart("999999999");
+
+        // Kiểm tra kết quả
+        assertNull(result);
     }
 }

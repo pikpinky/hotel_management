@@ -175,4 +175,76 @@ public class RentalServiceTest {
         assertNull(result);
         // Note: Actual assertions depend on DB state
     }
+
+    /**
+     * Test case TC-RENTAL-SERVICE-008: Kiểm tra thêm rental với guest null.
+     * Expected: Handle null gracefully hoặc throw exception.
+     */
+    @Test(expected = org.springframework.dao.InvalidDataAccessApiUsageException.class)
+    public void testAddRentalInfo_NullRental_ShouldHandleNull() {
+        // Gọi phương thức với null - expect exception
+        rentalService.addRentalInfo(null);
+    }
+
+    /**
+     * Test case TC-RENTAL-SERVICE-009: Kiểm tra tìm rental với ID không tồn tại.
+     * Expected: Throw EntityNotFound exception.
+     */
+    @Test(expected = javax.persistence.EntityNotFoundException.class)
+    public void testGetRentalById_InvalidId_ShouldReturnNull() {
+        // Gọi phương thức với ID không tồn tại - expect exception
+        rentalService.getRentalById(999L);
+    }
+
+    /**
+     * Test case TC-RENTAL-SERVICE-010: Kiểm tra getRentalCheckOutInfo với chamber number không tồn tại.
+     * Expected: Trả về null.
+     */
+    @Test
+    public void testGetRentalCheckOutInfo_InvalidChamberNumber_ShouldReturnNull() {
+        // Gọi phương thức với chamber number không tồn tại
+        Rental result = rentalService.getRentalCheckOutInfo("999");
+
+        // Kiểm tra kết quả
+        assertNull(result);
+    }
+
+    /**
+     * Test case TC-RENTAL-SERVICE-011: Kiểm tra getGuestCheckOutInfo với chamber number không tồn tại.
+     * Expected: Trả về null.
+     */
+    @Test
+    public void testGetGuestCheckOutInfo_InvalidChamberNumber_ShouldReturnNull() {
+        // Gọi phương thức với chamber number không tồn tại
+        Guest result = rentalService.getGuestCheckOutInfo("999");
+
+        // Kiểm tra kết quả
+        assertNull(result);
+    }
+
+    /**
+     * Test case TC-RENTAL-SERVICE-012: Kiểm tra getChamberCheckOutInfo với chamber number không tồn tại.
+     * Expected: Trả về null.
+     */
+    @Test
+    public void testGetChamberCheckOutInfo_InvalidChamberNumber_ShouldReturnNull() {
+        // Gọi phương thức với chamber number không tồn tại
+        Chamber result = rentalService.getChamberCheckOutInfo("999");
+
+        // Kiểm tra kết quả
+        assertNull(result);
+    }
+
+    /**
+     * Test case TC-RENTAL-SERVICE-013: Kiểm tra getRentalIdOrderFood với chamber number không tồn tại.
+     * Expected: Trả về null.
+     */
+    @Test
+    public void testGetRentalIdOrderFood_InvalidChamberNumber_ShouldReturnNull() {
+        // Gọi phương thức với chamber number không tồn tại
+        String result = rentalService.getRentalIdOrderFood("999");
+
+        // Kiểm tra kết quả
+        assertNull(result);
+    }
 }

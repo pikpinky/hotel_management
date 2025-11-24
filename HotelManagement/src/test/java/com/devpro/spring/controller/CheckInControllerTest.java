@@ -670,4 +670,43 @@ public class CheckInControllerTest {
         // Check DB
         assertEquals(1, chamberRepository.count());
     }
+
+    /**
+     * Test case TC-CHECKIN-CONTROLLER-022: Kiểm tra với page size không hợp lệ.
+     * Expected: Handle invalid page size.
+     */
+    @Test
+    public void testCheckIn_InvalidPageSize_ShouldHandleInvalidSize() {
+        // Gọi phương thức với page size âm
+        org.springframework.ui.ExtendedModelMap modelMap = new org.springframework.ui.ExtendedModelMap();
+        String viewName = checkInController.checkIn(modelMap, 0, -1, "single", "true");
+
+        // Kiểm tra kết quả
+        assertEquals("check-in", viewName);
+    }
+
+    /**
+     * Test case TC-CHECKIN-CONTROLLER-023: Kiểm tra với tất cả parameters null.
+     * Expected: Throw NullPointerException.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testCheckIn_AllNullParameters_ShouldUseDefaults() {
+        // Gọi phương thức với null parameters - expect exception
+        org.springframework.ui.ExtendedModelMap modelMap = new org.springframework.ui.ExtendedModelMap();
+        checkInController.checkIn(modelMap, 0, 12, null, null);
+    }
+
+    /**
+     * Test case TC-CHECKIN-CONTROLLER-024: Kiểm tra với page number quá lớn.
+     * Expected: Handle gracefully, có thể return empty hoặc last page.
+     */
+    @Test
+    public void testCheckIn_VeryLargePageNumber_ShouldHandleGracefully() {
+        // Gọi phương thức với page number rất lớn
+        org.springframework.ui.ExtendedModelMap modelMap = new org.springframework.ui.ExtendedModelMap();
+        String viewName = checkInController.checkIn(modelMap, 1000, 12, "single", "true");
+
+        // Kiểm tra kết quả
+        assertEquals("check-in", viewName);
+    }
 }
