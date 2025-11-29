@@ -95,7 +95,7 @@ public class CheckInApiTest {
         assertEquals(200, response.getStatusCodeValue());
         AjaxResponseBody result = (AjaxResponseBody) response.getBody();
         assertNotNull(result);
-        assertEquals("Check in thành công!", result.getMessage());
+        assertEquals("Đặt phòng thành công", result.getMessage());
 
         // Verify DB: Guest mới được tạo với thông tin đúng
         assertEquals(1, guestRepository.count());
@@ -135,7 +135,7 @@ public class CheckInApiTest {
         assertEquals(200, response.getStatusCodeValue());
         AjaxResponseBody result = (AjaxResponseBody) response.getBody();
         assertNotNull(result);
-        assertEquals("Check in thành công!", result.getMessage());
+        assertEquals("Đặt phòng thành công", result.getMessage());
 
         // Verify DB: Guest được update với thông tin mới từ DTO
         assertEquals(1, guestRepository.count());
@@ -236,7 +236,7 @@ public class CheckInApiTest {
         assertEquals(200, response.getStatusCodeValue());
         AjaxResponseBody result = (AjaxResponseBody) response.getBody();
         assertNotNull(result);
-        assertEquals("Check in thành công!", result.getMessage());
+        assertEquals("Đặt phòng thành công", result.getMessage());
 
         // Verify DB: Rental được tạo với đúng info nhưng có thể fail do bug payment_id null
         // Nếu code fix, uncomment assertions sau:
